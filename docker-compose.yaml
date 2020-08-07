@@ -1,0 +1,21 @@
+version: '3'
+
+networks:
+  network: {}
+
+services:
+  http:
+    networks:
+    - network
+    volumes:
+    - .:/srv/app
+    environment:
+      MIX_ENV: dev
+    build:
+      args:
+        MIX_ENV: dev
+      context: '.'
+      dockerfile: Dockerfile
+    ports:
+    - "4000:4000"
+    command: sh -c "mix deps.get && mix phx.server"
