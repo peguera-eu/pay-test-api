@@ -5,9 +5,9 @@ defmodule WeatherForecastWeb.CityController do
   action_fallback WeatherForecastWeb.FallbackController
 
   def index(conn, _params) do
-    query = conn
+    conn
     |> fetch_query_params
-    fetch_cities(query)
+    |> fetch_cities
   end
 
   def fetch_cities(%{query_params: %{ "top_left_lat" => top_left_lat, "top_left_lng" => top_left_lng, "bottom_right_lat" => bottom_right_lat, "bottom_right_lng" => bottom_right_lng}} = conn) do
