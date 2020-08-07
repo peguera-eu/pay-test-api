@@ -4,14 +4,24 @@ defmodule WeatherForecast.Cities do
 
   alias WeatherForecast.Helpers.BoundingBox
   alias WeatherForecast.Readings
+
   def get_with_readings() do
-    cities_with_readings_ids = Readings.get_city_ids()
+    stringified_cities = cities_database()
+
+    case Poison.decode(stringified_cities) do
+      {:ok, cities} ->
+        city_ids = Readings.get_city_ids()
+        cities = Enum.map(city_ids, fn id -> get_by_id(cities, id) end)
+      {:error, _} ->
+        {:error, "Unable to parse city file"}
+      {:error, _,_} ->
+        {:error, "Unable to parse city file"}
+    end
   end
 
   def get_all() do
     stringified_cities = cities_database()
-    cities = Poison.decode(stringified_cities)
-    case cities do
+    case Poison.decode(stringified_cities) do
       {:ok, cities} ->
         cities
       {:error, _} ->
@@ -24,8 +34,7 @@ defmodule WeatherForecast.Cities do
   def get_from_bounds(top_left_lat, top_left_lng, bottom_right_lat, bottom_right_lng) do
     bounds = BoundingBox.resolve_bounds(top_left_lat, top_left_lng, bottom_right_lat, bottom_right_lng)
     stringified_cities = cities_database()
-    cities = Poison.decode(stringified_cities)
-    case cities do
+    case Poison.decode(stringified_cities) do
       {:ok, cities} ->
         cities
         |> sort_by_latitude()
@@ -39,6 +48,10 @@ defmodule WeatherForecast.Cities do
     end
   end
 
+  defp get_by_id(cities, city_id) do
+    hd(Enum.filter(cities, fn city -> city["id"] == city_id end))
+  end
+
   defp sort_by_latitude(arr) do
     Enum.sort_by(arr, & &1["coord"]["lat"])
   end
@@ -48,11 +61,11 @@ defmodule WeatherForecast.Cities do
   end
 
   defp get_within_lat_bounds(arr, top_left, bottom_right) do
-    Enum.filter(arr, fn x -> bottom_right <= x["coord"]["lat"] && x["coord"]["lat"]<= top_left end)
+    Enum.filter(arr, fn city -> bottom_right <= city["coord"]["lat"] && city["coord"]["lat"]<= top_left end)
   end
 
   defp get_within_lng_bounds(arr,top_left, bottom_right) do
-    Enum.filter(arr, fn x -> (x["coord"]["lon"] >= top_left && x["coord"]["lon"]<= bottom_right) end)
+    Enum.filter(arr, fn city -> (city["coord"]["lon"] >= top_left && city["coord"]["lon"]<= bottom_right) end)
   end
 
   defp cities_database() do
