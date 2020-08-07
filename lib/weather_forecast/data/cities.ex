@@ -3,30 +3,22 @@ require Logger
 defmodule WeatherForecast.Cities do
 
   alias WeatherForecast.Helpers.BoundingBox
-
-  def get_all() do
-    # {:ok, file} = File.open('city_list.json', [:utf8])
-    # data = File.read('city_list.json')
-    # IO.inspect(data)
-    # case data do
-    #   {:ok, stringified_cities} ->
-        stringified_cities = cities_database()
-        cities = Poison.decode(stringified_cities)
-        case cities do
-          {:ok, cities} ->
-            cities
-          {:error, _} ->
-            {:error, "Unable to parse file"}
-          {:error, _,_} ->
-            {:error, "Unable to parse file"}
-        end
-    #   {:error, reason}->
-    #     {:error, reason}
-    # end
+  alias WeatherForecast.Readings
+  def get_with_readings() do
+    cities_with_readings_ids = Readings.get_city_ids()
   end
 
-  def get_one(city_id) do
-
+  def get_all() do
+    stringified_cities = cities_database()
+    cities = Poison.decode(stringified_cities)
+    case cities do
+      {:ok, cities} ->
+        cities
+      {:error, _} ->
+        {:error, "Unable to parse city file"}
+      {:error, _,_} ->
+        {:error, "Unable to parse city file"}
+    end
   end
 
   def get_from_bounds(top_left_lat, top_left_lng, bottom_right_lat, bottom_right_lng) do
