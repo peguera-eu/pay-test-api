@@ -9,16 +9,15 @@ defmodule WeatherForecast.Readings do
 
   def get_city_ids() do
     stringified_readings = readings_database()
-        readings = Poison.decode(stringified_readings)
-        case readings do
-          {:ok, readings} ->
-            readings
-          {:error, _} ->
-            {:error, "Unable to parse readings file"}
-          {:error, _,_} ->
-            {:error, "Unable to parse readings file"}
-        end
-    IO.inspect(Enum.map(, fn x -> x["cityId"] end))
+    readings = Poison.decode(stringified_readings)
+    case readings do
+      {:ok, readings} ->
+        Enum.map(readings, fn x -> x["cityId"] end)
+      {:error, _} ->
+        {:error, "Unable to parse readings file"}
+      {:error, _,_} ->
+        {:error, "Unable to parse readings file"}
+    end
   end
 
   defp readings_database() do
