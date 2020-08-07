@@ -7,6 +7,18 @@ defmodule WeatherForecastWeb.ErrorView do
   #   %{errors: %{detail: "Internal Server Error"}}
   # end
 
+  def render("500.json", %{reason: reason}) do
+    %{reason: reason}
+  end
+
+  def render("400.json", %{reason: reason}) do
+    %{reason: reason}
+  end
+
+  def render("422.json", _assigns) do
+    %{errors: %{detail: "Missing required parameters for query"}}
+  end
+
   # By default, Phoenix returns the status message from
   # the template name. For example, "404.json" becomes
   # "Not Found".
