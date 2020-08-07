@@ -20,4 +20,8 @@ defmodule WeatherForecastWeb.CityController do
     render(conn, "index.json", cities: cities)
   end
 
+  def forecast(conn, _params) do
+    cities = Cities.get_with_readings()
+    render(conn, "index.json", cities: cities)
+  end
 end
