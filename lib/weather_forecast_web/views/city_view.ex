@@ -11,14 +11,17 @@ defmodule WeatherForecastWeb.CityView do
   end
 
   def render("city.json", %{city: city}) do
-    location = city["coord"]
     %{id: city["id"],
       name: city["name"],
-      code: city["code"],
+      country: city["country"],
       location: %{
-        lat: location["lat"],
-        lng: location["lon"]
-      }
+        lat: city["coord"]["lat"],
+        lng: city["coord"]["lon"]
+      },
+      geoname: city["geoname"],
+      stat: city["stat"],
+      stations: city["stations"],
+      zoom: city["zoom"]
     }
   end
 end
