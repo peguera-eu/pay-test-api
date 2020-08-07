@@ -11,7 +11,16 @@ defmodule WeatherForecastWeb.ReadingView do
   end
 
   def render("reading.json", %{reading: reading}) do
-    %{id: reading.id,
-      city_id: reading.city_id}
+    %{
+      time: reading["dt"],
+      temp: reading["temp"],
+      pressure: reading["pressure"],
+      humidity: reading["humidity"],
+      weather: reading["weather"],
+      wind_speed: reading["speed"],
+      cloud_coverage: reading["clouds"],
+      uvi: reading["uvi"],
+      deg: reading["deg"]
+    }
   end
 end
