@@ -20,7 +20,7 @@ defmodule WeatherForecast.MixProject do
   def application do
     [
       mod: {WeatherForecast.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools,:timex]
     ]
   end
 
@@ -39,7 +39,8 @@ defmodule WeatherForecast.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:poison, "~> 3.1"}
+      {:poison, "~> 3.1"},
+      {:timex, "~> 3.0"}
     ]
   end
 
