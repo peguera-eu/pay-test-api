@@ -8,9 +8,9 @@ defmodule WeatherForecast.Readings do
         city_readings = hd(Enum.filter(readings, fn reading -> reading["cityId"] == city_id end))
         hd(Enum.sort_by(city_readings["data"], & &1["dt"], :desc))
       {:error, _} ->
-        {:error, "Unable to parse readings file"}
+        {:error, "Unable to parse readings data"}
       {:error, _,_} ->
-        {:error, "Unable to parse readings file"}
+        {:error, "Unable to parse readings data"}
     end
   end
 
@@ -28,9 +28,9 @@ defmodule WeatherForecast.Readings do
             []
         end
       {:error, _} ->
-        {:error, "Unable to parse readings file"}
+        {:error, "Unable to parse readings data"}
       {:error, _,_} ->
-        {:error, "Unable to parse readings file"}
+        {:error, "Unable to parse readings data"}
     end
   end
 
@@ -41,9 +41,9 @@ defmodule WeatherForecast.Readings do
       {:ok, readings} ->
         Enum.map(readings, fn x -> x["cityId"] end)
       {:error, _} ->
-        {:error, "Unable to parse readings file"}
+        {:error, "Unable to parse readings data"}
       {:error, _,_} ->
-        {:error, "Unable to parse readings file"}
+        {:error, "Unable to parse readings data"}
     end
   end
 

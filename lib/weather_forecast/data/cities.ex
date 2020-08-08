@@ -13,9 +13,9 @@ defmodule WeatherForecast.Cities do
         city_ids = Readings.get_city_ids()
         cities = Enum.map(city_ids, fn id -> get_by_id(cities, id) end)
       {:error, _} ->
-        {:error, "Unable to parse city file"}
+        {:error, "Unable to parse city cities data"}
       {:error, _,_} ->
-        {:error, "Unable to parse city file"}
+        {:error, "Unable to parse city cities data"}
     end
   end
 
@@ -25,9 +25,9 @@ defmodule WeatherForecast.Cities do
       {:ok, cities} ->
         cities
       {:error, _} ->
-        {:error, "Unable to parse city file"}
+        {:error, "Unable to parse city cities data"}
       {:error, _,_} ->
-        {:error, "Unable to parse city file"}
+        {:error, "Unable to parse city cities data"}
     end
   end
 
@@ -42,9 +42,9 @@ defmodule WeatherForecast.Cities do
         |> sort_by_longitude()
         |> get_within_lng_bounds(bounds.top_left_lng,bounds.bottom_right_lng)
       {:error, _} ->
-        {:error, "Unable to parse file"}
+        {:error, "Unable to parse cities data"}
       {:error, _,_} ->
-        {:error, "Unable to parse file"}
+        {:error, "Unable to parse cities data"}
     end
   end
 
