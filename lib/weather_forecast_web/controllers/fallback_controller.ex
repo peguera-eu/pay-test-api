@@ -6,11 +6,11 @@ defmodule WeatherForecastWeb.FallbackController do
   """
   use WeatherForecastWeb, :controller
 
-  def call(conn, {:error, :bad_request, reason}) do
+  def call(conn, {:error, :unprocessable_entity, reason}) do
     conn
-    |> put_status(:bad_request)
+    |> put_status(:unprocessable_entity)
     |> put_view(WeatherForecastWeb.ErrorView)
-    |> render(:"400", %{reason: reason})
+    |> render(:"422", %{reason: reason})
   end
 
   def call(conn, {:error, :not_found}) do
