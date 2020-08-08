@@ -13,20 +13,50 @@ defmodule WeatherForecastWeb.ReadingController do
 
 
   def fetch_readings(%{query_params: %{ "from" => from, "to" => to },path_params: %{ "city_id" => city_id }} = conn) do
-    {:ok, parsed_from} = Timex.parse(from, "{YYYY}-{0M}-{D}")
-    from_timestamp = Timex.to_unix(parsed_from)
-    {:ok, parsed_to} = Timex.parse(to, "{YYYY}-{0M}-{D}")
-    to_timestamp = Timex.to_unix(parsed_to)
-    {integer_city_id, _} = Integer.parse(city_id)
-
-    readings = Readings.get_from_range(integer_city_id, from_timestamp, to_timestamp)
-    render(conn, "index.json", readings: readings)
+    case Timex.parse(from, "{YYYY}-{0M}-{D}") do
+      {:ok, parsed_from} ->
+        from_timestamp = Timex.to_unix(parsed_from)
+        case Timex.parse(to, "{YYYY}-{0M}-{D}") do
+          {:ok, parsed_to} ->
+            to_timestamp = Timex.to_unix(parsed_to)
+            case Integer.parse(city_id) do
+              {integer_city_id, _} ->
+                readings = Readings.get_from_range(integer_city_id, from_timestamp, to_timestamp)
+                case readings do
+                  {:error, reason} ->
+                    {:error, :internal_server_error, reason}
+                  [_ | _] = data ->
+                    render(conn, "index.json", readings: data)
+                  [] ->
+                    render(conn, "index.json", reading: [])
+                end
+              :error ->
+                {:error, "Invalid city ID"}
+            end
+          {:error, reason} ->
+            {:error, :unprocessable_entity, reason}
+        end
+      {:error, reason} ->
+        {:error, :unprocessable_entity, reason}
+    end
   end
 
+
   def fetch_readings(%{path_params: %{ "city_id" => city_id }} = conn) do
-    {integer_city_id, _} = Integer.parse(city_id)
-    reading = Readings.get_most_recent(integer_city_id)
-    render(conn, "reading.json", reading: reading)
+    case Integer.parse(city_id) do
+      {integer_city_id, _} ->
+        reading = Readings.get_most_recent(integer_city_id)
+        case reading do
+          {:error, reason} ->
+            {:error, :internal_server_error, reason}
+          [_ | _] = data ->
+            render(conn, "reading.json", reading: data)
+          [] ->
+            render(conn, "reading.json", reading: [])
+        end
+      :error ->
+        {:error, :unprocessable_entity, "Invalid city ID"}
+    end
   end
 
 end
