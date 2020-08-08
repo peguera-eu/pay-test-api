@@ -19,4 +19,22 @@ defmodule WeatherForecast.Helpers.BoundingBox do
     }
   end
 
+  def valid_lat(lat) do
+    case Integer.parse(lat) do
+      {parsed_lat, _} ->
+        -90 <=parsed_lat && parsed_lat <=90
+      :error ->
+        false
+    end
+  end
+
+  def valid_lng(lng) do
+    case Integer.parse(lng) do
+      {parsed_lng, _} ->
+        -180 <= parsed_lng && parsed_lng <= 180
+      :error ->
+        false
+    end
+  end
+
 end
