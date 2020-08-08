@@ -1,10 +1,37 @@
 defmodule WeatherForecast.Readings do
 
   def get_most_recent(city_id) do
-
+    stringified_readings = readings_database()
+    Poison.decode(stringified_readings)
+    case Poison.decode(stringified_readings) do
+      {:ok, readings} ->
+        city_readings = hd(Enum.filter(readings, fn reading -> reading["cityId"] == city_id end))
+        hd(Enum.sort_by(city_readings["data"], & &1["dt"], :desc))
+      {:error, _} ->
+        {:error, "Unable to parse readings file"}
+      {:error, _,_} ->
+        {:error, "Unable to parse readings file"}
+    end
   end
 
   def get_from_range(city_id, from, to) do
+    stringified_readings = readings_database()
+    Poison.decode(stringified_readings)
+    case Poison.decode(stringified_readings) do
+      {:ok, readings} ->
+        city_readings = Enum.filter(readings, fn reading -> reading["cityId"] == city_id end)
+        case city_readings do
+          [city | _] ->
+            read = Enum.sort_by(city["data"], & &1["dt"], :desc)
+            Enum.filter(read, fn reading -> (from <= reading["dt"] && reading["dt"] <= to) end)
+          [] ->
+            []
+        end
+      {:error, _} ->
+        {:error, "Unable to parse readings file"}
+      {:error, _,_} ->
+        {:error, "Unable to parse readings file"}
+    end
   end
 
   def get_city_ids() do
